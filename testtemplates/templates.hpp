@@ -3,7 +3,8 @@
 
 #include <stdio.h>
 
-
+// Node structue
+// it's outisde because we have a function that will need to access the structure of it
 template<class Key, class Info>
 struct Node{
     Key key;
@@ -24,28 +25,37 @@ struct Node{
 template<class Key, class Info>
 class Sequence {
     Node<Key,Info>* head;
+    Node<Key,Info>* tail;
     
     class iterator {
         friend class Sequence;
     private:
         Node<Key,Info> *node_ptr;
-        
+        iterator(){
+            node_ptr = nullptr;
+        }
+        iterator(Node<Key,Info>* ptr){
+            node_ptr = ptr;
+        }
     };
 public:
     Sequence();
     
+    iterator begin();
     void print();
-    
     void push_back(Key,Info);
     void push_front(Key,Info);
-    void insert_after(Key af, Key k,Info v);
     
-    Info& operator[](int);
+    bool is_empty(){
+        if(!head)
+            return 1;
+        return 0;
+    }
 };
 
 template <class Key, class Info>
 Sequence<Key, Info>::Sequence(){
-    head = nullptr;
+    head = tail = nullptr;
 }
 
 
@@ -75,20 +85,15 @@ void Sequence<Key, Info>::push_back(Key key, Info val){
 
 template<class Key, class Info>
 void Sequence<Key,Info>::push_front(Key key, Info val){
-    if(!head){
-        head = new Node<Key,Info>(key,val);
-    }
-    else{
-        Node<Key,Info>* tmp = head;
-        head = new Node<Key,Info>(key,val,tmp);
-    }
+    head = new Node<Key,Info>(key,val,head);
 }
 
-
-
-
-
-
+/*
+ *  (1,2,3,4),(5,6,7,8)
+ *  produce(s1,2,2,s2,1,2,10)
+ *  3,4,6,7,1,2,8,5,3,4|
+ *
+ */
 template<class Key, class Info>
 Sequence<Key,Info> produce(const Sequence<Key,Info> &s1, int start1, int len1,
                            const Sequence<Key,Info> &s2, int start2, int len2,
