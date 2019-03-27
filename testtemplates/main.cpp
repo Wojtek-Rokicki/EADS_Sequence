@@ -1,15 +1,14 @@
-//
-//  main.cpp
-//  testtemplates
-//
-//  Created by Winky Face on 27/03/2019.
-//  Copyright © 2019 Barnaba Krupowicz. All rights reserved.
-//
-
 #include <iostream>
+#include "templates.hpp"
+#include <vector>
 
-int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
-    return 0;
+using std::vector;
+
+int main() {
+    Dictionary<int, int> x;
+    x.push_back(5,5);
+    x.push_back(4,4);
+    x.push_back(3,3);
+    x.print();
+    vector<int> v;
 }

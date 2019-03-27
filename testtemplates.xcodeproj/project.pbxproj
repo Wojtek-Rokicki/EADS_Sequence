@@ -25,6 +25,7 @@
 /* Begin PBXFileReference section */
 		A7EA8CB0224B796E0002C39F /* testtemplates */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = testtemplates; sourceTree = BUILT_PRODUCTS_DIR; };
 		A7EA8CB3224B796E0002C39F /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		A7EA8CBD224B79CC0002C39F /* templates.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = templates.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +59,7 @@
 			isa = PBXGroup;
 			children = (
 				A7EA8CB3224B796E0002C39F /* main.cpp */,
+				A7EA8CBD224B79CC0002C39F /* templates.hpp */,
 			);
 			path = testtemplates;
 			sourceTree = "<group>";
@@ -240,6 +242,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 78L9ACXCKK;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -248,6 +251,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 78L9ACXCKK;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
