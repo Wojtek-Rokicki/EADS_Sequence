@@ -9,22 +9,35 @@ struct Node{
     Key key;
     Info val;
     Node* next = nullptr;
+
+    Node<Key,Info>(){
+        next = nullptr;
+    }
+    
+    Node<Key,Info>(Key& k, Info& v, Node<Key,Info>* next_ptr=nullptr){
+        key = k;
+        val = v;
+        next = next_ptr;
+    }
 };
 
 template<class Key, class Info>
 class Sequence {
     Node<Key,Info>* head;
+    
+    class iterator {
+        friend class Sequence;
+    private:
+        Node<Key,Info> *node_ptr;
+        
+    };
 public:
     Sequence();
-
-//    void remove_key(Key);
-//    void remove_pos(int);
-//    void pop();
+    
     void print();
     
     void push_back(Key,Info);
     void push_front(Key,Info);
-//    void insert(Key,Info,int);
     void insert_after(Key af, Key k,Info v);
     
     Info& operator[](int);
@@ -49,34 +62,25 @@ void Sequence<Key,Info>::print() {
 template <class Key, class Info>
 void Sequence<Key, Info>::push_back(Key key, Info val){
     if(!head){
-        head = new Node<Key,Info>;
-        head->key = key;
-        head->val = val;
+        head = new Node<Key,Info>(key,val);
     }
     else{
         Node<Key,Info>* tmp = head;
         while(tmp->next){
             tmp = tmp->next;
         }
-        tmp->next = new Node<Key,Info>;
-        tmp->next->key = key;
-        tmp->next->val = val;
+        tmp->next = new Node<Key,Info>(key,val);
     }
 }
 
 template<class Key, class Info>
 void Sequence<Key,Info>::push_front(Key key, Info val){
     if(!head){
-        head = new Node<Key,Info>;
-        head->key = key;
-        head->val = val;
+        head = new Node<Key,Info>(key,val);
     }
     else{
         Node<Key,Info>* tmp = head;
-        head = new Node<Key,Info>;
-        head->key = key;
-        head->val = val;
-        head->next = tmp;
+        head = new Node<Key,Info>(key,val,tmp);
     }
 }
 
