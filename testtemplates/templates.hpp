@@ -22,26 +22,34 @@ struct Node{
     }
 };
 
+
+
 template<class Key, class Info>
 class Sequence {
     Node<Key,Info>* head;
     Node<Key,Info>* tail;
-    
+public:
     class iterator {
         friend class Sequence;
     private:
         Node<Key,Info> *node_ptr;
-        iterator(){
-            node_ptr = nullptr;
-        }
+        Node<Key,Info> *prev;
         iterator(Node<Key,Info>* ptr){
             node_ptr = ptr;
+            prev = nullptr;
+        }
+        void next(){
+            prev = node_ptr;
+            node_ptr = node_ptr->next;
         }
     };
-public:
+    
     Sequence();
     
-    iterator begin();
+    iterator begin(){
+        return iterator(head);
+    }
+    
     void print();
     void push_back(Key,Info);
     void push_front(Key,Info);
@@ -55,7 +63,8 @@ public:
 
 template <class Key, class Info>
 Sequence<Key, Info>::Sequence(){
-    head = tail = nullptr;
+    head = nullptr;
+    tail = nullptr;
 }
 
 

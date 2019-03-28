@@ -5,13 +5,12 @@
 
 int main() {
     Sequence<int, int> x;
-    Sequence<int, int> z;
     x.push_back(5,5);
     x.push_back(4,4);
     x.push_back(3,3);
+    x.push_front(6,6);
     x.print();
-    x.push_front(3,3);
-    x.print();
-    z.push_front(3,3);
-    z.print();
+    
+    Sequence<int,int>::iterator itr = x.begin();
+    
 }
