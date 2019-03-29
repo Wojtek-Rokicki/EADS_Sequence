@@ -12,7 +12,8 @@ int main() {
     y.push_back(2, 2);
     y.push_back(4, 4);
     y.push_back(6, 6);
-    
-    Sequence<int, int> z = produce(x, 0, 1, y, 0, 1, 6);
-    z.print();
+    x.iter_print();
+   // Sequence<int, int> z = produce(x, 0, 1, y, 0, 1, 6);
+   // z.print();
+    Sequence<int,int>::iterator itr_1;
 }

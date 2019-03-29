@@ -20,7 +20,9 @@ struct Node{
         val = v;
         next = next_ptr;
     }
+    
     Node<Key,Info>(Node<Key,Info> const &x):key(x.key),val(x.val),next(nullptr){}
+    
     void print(){
         std::cout << key << " : " << val << std::endl;
     }
@@ -34,9 +36,32 @@ private:
     Node<Key,Info>* head;
     int length;
 public:
+    class iterator{
+        friend class Sequence;
+    public:
+        Node<Key,Info>* start;
+        Node<Key,Info>* node;
+        
+        iterator():node(nullptr),start(nullptr){}
+        iterator(Node<Key,Info>* n):node(n),start(n){}
+        
+        iterator operator++(int){
+            if(node->next)
+                node = node->next;
+            else
+                node = start;
+            return *this;
+        }
+        
+        bool operator==(const iterator& x){
+            return x.node == node;
+        }
+
+    };
     Sequence():head(nullptr),length(0){}
 
     void print();
+    void iter_print();
     void push_back(Key,Info);
     void push_back(Node<Key,Info>);
     void push_front(Key,Info);
@@ -57,6 +82,18 @@ void Sequence<Key,Info>::print() {
     while(tmp){
         tmp->print();
         tmp = tmp->next;
+    }
+}
+
+template <class Key, class Info>
+void Sequence<Key,Info>::iter_print() {
+    Sequence<Key,Info>::iterator itr(head);
+    while(1){
+        itr.node->print();
+        itr++;
+        if(itr.node == itr.start){
+            break;
+        }
     }
 }
 
@@ -133,7 +170,6 @@ Sequence<Key,Info> produce(const Sequence<Key,Info> &s1, int start1, int len1,
                            const Sequence<Key,Info> &s2, int start2, int len2,
                            int limit){
     Sequence<Key,Info> result;
-    
     int i=0,j;
     int i_1 = start1;
     int i_2 = start2;
@@ -155,4 +191,11 @@ Sequence<Key,Info> produce(const Sequence<Key,Info> &s1, int start1, int len1,
     return result;
 }
 
+template<class Key, class Info>
+Sequence<Key,Info> iproduce(const Sequence<Key,Info> &s1, int start1, int len1,
+                           const Sequence<Key,Info> &s2, int start2, int len2,
+                           int limit){
+    
+    Sequence<Key,Info>::iterator itr_1;
+}
 #endif /* templates_hpp */
