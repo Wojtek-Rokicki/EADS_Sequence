@@ -73,6 +73,9 @@ public:
             return 1;
         return 0;
     }
+    
+    friend class iproduce;
+    friend class produce;
 };
 
 
@@ -191,11 +194,5 @@ Sequence<Key,Info> produce(const Sequence<Key,Info> &s1, int start1, int len1,
     return result;
 }
 
-template<class Key, class Info>
-Sequence<Key,Info> iproduce(const Sequence<Key,Info> &s1, int start1, int len1,
-                           const Sequence<Key,Info> &s2, int start2, int len2,
-                           int limit){
-    
-    Sequence<Key,Info>::iterator itr_1;
-}
+
 #endif /* templates_hpp */

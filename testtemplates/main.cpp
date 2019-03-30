@@ -2,7 +2,6 @@
 #include "templates.hpp"
 
 
-
 int main() {
     Sequence<int, int> x;
     x.push_back(1,1);
@@ -13,7 +12,7 @@ int main() {
     y.push_back(4, 4);
     y.push_back(6, 6);
     x.iter_print();
-   // Sequence<int, int> z = produce(x, 0, 1, y, 0, 1, 6);
-   // z.print();
+    Sequence<int, int> z = produce(x, 0, 1, y, 0, 1, 6);
+    z.print();
     Sequence<int,int>::iterator itr_1;
 }
