@@ -3,45 +3,40 @@
 
 #include <stdio.h>
 
-// Node structue
-// it's outisde because we have a function that will need to access the structure of it
-template<class Key, class Info>
-struct Node{
-    Key key;
-    Info val;
-    Node* next = nullptr;
-
-    Node<Key,Info>(){
-        next = nullptr;
-    }
-    
-    Node<Key,Info>(Key& k, Info& v, Node<Key,Info>* next_ptr=nullptr){
-        key = k;
-        val = v;
-        next = next_ptr;
-    }
-    Node<Key,Info>(Node<Key,Info> const &x):key(x.key),val(x.val),next(nullptr){}
-    void print(){
-        std::cout << key << " : " << val << std::endl;
-    }
-};
-
-
-
 template<class Key, class Info>
 class Sequence {
 private:
-    Node<Key,Info>* head;
+    struct Node{
+        Key key;
+        Info val;
+        Node* next = nullptr;
+        
+        Node():next(nullptr){}
+        Node(Key& k, Info& v, Node* next_ptr = nullptr){
+            key = k;
+            val = v;
+            next = next_ptr;
+        }
+        Node(Node const &x){
+            key = x.key;
+            val = x.val;
+            next = nullptr;
+        }
+        void print(){
+            std::cout << key << " : " << val << std::endl;
+        }
+    };
+    Node* head;
     int length;
 public:
     Sequence():head(nullptr),length(0){}
 
     void print();
     void push_back(Key,Info);
-    void push_back(Node<Key,Info>);
+    void push_back(Node);
     void push_front(Key,Info);
     
-    Node<Key,Info>& looped_get(int pos) const;
+    Node& looped_get(int pos) const;
     
     bool is_empty(){
         if(!head)
@@ -53,7 +48,7 @@ public:
 
 template <class Key, class Info>
 void Sequence<Key,Info>::print() {
-    Node<Key,Info>* tmp = head;
+    Node* tmp = head;
     while(tmp){
         tmp->print();
         tmp = tmp->next;
@@ -64,42 +59,42 @@ void Sequence<Key,Info>::print() {
 template <class Key, class Info>
 void Sequence<Key, Info>::push_back(Key key, Info val){
     if(!head){
-        head = new Node<Key,Info>(key,val);
+        head = new Node(key,val);
     }
     else{
-        Node<Key,Info>* tmp = head;
+        Node* tmp = head;
         while(tmp->next){
             tmp = tmp->next;
         }
-        tmp->next = new Node<Key,Info>(key,val);
+        tmp->next = new Node(key,val);
     }
     length++;
 }
 
 template <class Key, class Info>
-void Sequence<Key, Info>::push_back(Node<Key,Info> x){
+void Sequence<Key, Info>::push_back(Node x){
     if(!head){
-        head = new Node<Key,Info>(x);
+        head = new Node(x);
     }
     else{
-        Node<Key,Info>* tmp = head;
+        Node* tmp = head;
         while(tmp->next){
             tmp = tmp->next;
         }
-        tmp->next = new Node<Key,Info>(x);
+        tmp->next = new Node(x);
     }
     length++;
 }
 
 template<class Key, class Info>
 void Sequence<Key,Info>::push_front(Key key, Info val){
-    head = new Node<Key,Info>(key,val,head);
+    head = new Node(key,val,head);
     length++;
 }
 
 template<class Key, class Info>
-Node<Key,Info>& Sequence<Key,Info>::looped_get(int pos) const{
-    Node<Key,Info>* tmp = head;
+typename Sequence<Key,Info>::Node& Sequence<Key,Info>::looped_get(int pos) const{
+    Node* tmp = head;
     for(int i=0; i < pos%length; i++){
         if(tmp->next){
             tmp = tmp->next;
@@ -110,10 +105,6 @@ Node<Key,Info>& Sequence<Key,Info>::looped_get(int pos) const{
     }
     return *tmp;
 }
-
-
-
-
 
 
 
