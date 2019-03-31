@@ -6,31 +6,39 @@
 template<class Key, class Info>
 class Sequence {
 private:
+    // Definition of node element of sequence
     struct Node{
         Key key;
         Info val;
         Node* next = nullptr;
         
+        // Constructors
         Node():next(nullptr){}
         Node(Key& k, Info& v, Node* next_ptr = nullptr){
             key = k;
             val = v;
             next = next_ptr;
         }
+        
+        // Copy constructor
         Node(Node const &x){
             key = x.key;
             val = x.val;
             next = nullptr;
         }
+        
+        // Print function, requires the Key and Value to have << operator defined
         void print(){
             std::cout << key << " : " << val << std::endl;
         }
     };
+    
     Node* head;
     int length;
 public:
     Sequence():head(nullptr),length(0){}
-
+    ~Sequence();
+    
     void print();
     void push_back(Key,Info);
     void push_back(Node);
@@ -45,6 +53,15 @@ public:
     }
 };
 
+template <class Key, class Info>
+Sequence<Key,Info>::~Sequence(){
+    Node* tmp;
+    while(head){
+        tmp = head->next;
+        delete head;
+        head = tmp;
+    }
+}
 
 template <class Key, class Info>
 void Sequence<Key,Info>::print() {
@@ -53,6 +70,7 @@ void Sequence<Key,Info>::print() {
         tmp->print();
         tmp = tmp->next;
     }
+    
 }
 
 

@@ -1,6 +1,7 @@
 #include <iostream>
 #include "templates.hpp"
 
+using std::string;
 
 
 int main() {
@@ -15,4 +16,5 @@ int main() {
     
     Sequence<int, int> z = produce(x, 0, 1, y, 0, 1, 6);
     z.print();
+
 }
