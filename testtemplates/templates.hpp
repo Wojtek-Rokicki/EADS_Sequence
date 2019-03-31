@@ -2,6 +2,7 @@
 #define templates_hpp
 
 #include <stdio.h>
+#include <stdexcept>
 
 template<class Key, class Info>
 class Sequence {
@@ -37,22 +38,50 @@ private:
     int length;
 public:
     Sequence():head(nullptr),length(0){}
+    Sequence(Sequence const &);
     ~Sequence();
     
     void print();
-    void push_back(Key,Info);
-    void push_back(Node);
-    void push_front(Key,Info);
+    bool is_empty();
+    int size(){return length;}
     
-    Node& looped_get(int pos) const;
+    void push_back(Key,Info);   //done
+    void push_back(Node);       //done
+    void push_front(Key,Info);  //done
+    void push_front(Node x);    //done
+    void insert_at_pos(Key,Info,int pos);   //done
+    void insert_at_pos(Node,int pos);       //done
+    void insert_after_key(Key,Info,Key);    //
+    void insert_after_key(Node,Key);        //
     
-    bool is_empty(){
-        if(!head)
-            return 1;
-        return 0;
-    }
+    void remove_back();             //
+    void remove_front();            //
+    void remove_pos(int);           //
+    void remove_by_key(Key);        //
+    void remove_by_val(Info);       //
+    void empty();                   //
+    void erase();                   //
+    
+    Node& get(int pos) const;           //done
+    Node& looping_get(int pos) const;   //done
+    Node& operator[](int pos) const;    //done
 };
 
+
+// Copy contructor
+template <class Key, class Info>
+Sequence<Key,Info>::Sequence(Sequence const &x){
+    head = nullptr;
+    length = 0;
+    Node* tmp = x.head;
+    while(tmp){
+        this->push_back(*tmp);
+        tmp = tmp->next;
+    }
+}
+
+
+// Destructor, loops over nodes and deletes them
 template <class Key, class Info>
 Sequence<Key,Info>::~Sequence(){
     Node* tmp;
@@ -63,6 +92,7 @@ Sequence<Key,Info>::~Sequence(){
     }
 }
 
+// Print function, prints a list of nodes in format "Key : Value", mostly for debugging
 template <class Key, class Info>
 void Sequence<Key,Info>::print() {
     Node* tmp = head;
@@ -70,10 +100,17 @@ void Sequence<Key,Info>::print() {
         tmp->print();
         tmp = tmp->next;
     }
-    
 }
 
+// Returns true if empty and false if not
+template <class Key, class Info>
+bool Sequence<Key,Info>::is_empty(){
+    if(head)
+        return 0;
+    return 1;
+}
 
+// Adds element to the end of sequence
 template <class Key, class Info>
 void Sequence<Key, Info>::push_back(Key key, Info val){
     if(!head){
@@ -89,78 +126,97 @@ void Sequence<Key, Info>::push_back(Key key, Info val){
     length++;
 }
 
+// Adds element to the end of sequence by Node
 template <class Key, class Info>
 void Sequence<Key, Info>::push_back(Node x){
-    if(!head){
-        head = new Node(x);
-    }
-    else{
-        Node* tmp = head;
-        while(tmp->next){
-            tmp = tmp->next;
-        }
-        tmp->next = new Node(x);
-    }
-    length++;
+    this->push_back(x.key, x.val);
 }
 
+// Adds element to the front of sequence
 template<class Key, class Info>
 void Sequence<Key,Info>::push_front(Key key, Info val){
     head = new Node(key,val,head);
     length++;
 }
 
+// Adds element to the front of sequence by Node
 template<class Key, class Info>
-typename Sequence<Key,Info>::Node& Sequence<Key,Info>::looped_get(int pos) const{
+void Sequence<Key,Info>::push_front(Node x){
+    this->push_front(x.key, x.val);
+}
+
+
+template <class Key, class Info>
+void Sequence<Key, Info>::insert_at_pos(Key k, Info val, int pos){
+    if(pos > length)
+        throw std::out_of_range("Sequence out of range");
     Node* tmp = head;
-    for(int i=0; i < pos%length; i++){
-        if(tmp->next){
+    if(pos==0){
+        head = new Node(k,val,tmp);
+    }
+    else{
+        for(int i=0;i < pos-1;i++){
             tmp = tmp->next;
         }
-        else{
-            tmp = head;
-        }
+        tmp->next = new Node(k,val,tmp->next);
+    }
+}
+
+
+template <class Key, class Info>
+void Sequence<Key, Info>::insert_at_pos(Node n, int pos){
+    this->insert_at_pos(n.key, n.val, pos);
+}
+
+// Returns element from given position
+template<class Key, class Info>
+typename Sequence<Key,Info>::Node& Sequence<Key,Info>::get(int pos) const{
+    Node* tmp = head;
+    if(pos >= length)
+        throw std::out_of_range("Sequence out of range");
+    for(int i=0;i < pos; i++){
+        tmp = tmp->next;
     }
     return *tmp;
 }
 
+// Same as Get but loops the position
+template<class Key, class Info>
+typename Sequence<Key,Info>::Node& Sequence<Key,Info>::looping_get(int pos) const{
+    return this->get(pos%length);
+}
 
+// Brackets operator, calls get
+template<class Key, class Info>
+typename Sequence<Key,Info>::Node& Sequence<Key,Info>::operator[](int pos) const{
+    return this->get(pos);
+}
 
-
-
-
-
-
-/*
- *  (1,2,3,4),(5,6,7,8)
- *  produce(s1,2,2,s2,1,2,10)
- *  3,4,6,7,1,2,8,5,3,4|
- *
- */
+// Creates a new sequence made from 2 other sequences
+// For each sequence it takes the start and length of the snip as an argument
+// It takes as many from the sequences as it can until it reaches the specified limit
 template<class Key, class Info>
 Sequence<Key,Info> produce(const Sequence<Key,Info> &s1, int start1, int len1,
                            const Sequence<Key,Info> &s2, int start2, int len2,
                            int limit){
     Sequence<Key,Info> result;
-    
     int i=0,j;
-    int i_1 = start1;
-    int i_2 = start2;
+    int i_1 = start1, i_2 = start2;
+    
     while(1){
         if(i>=limit)
             break;
         for(j=0; j < len1; j++, i++){
             if(i>=limit)
                 break;
-            result.push_back(s1.looped_get(i_1++));
+            result.push_back(s1.looping_get(i_1++));
         }
         for(j=0; j < len2; j++, i++){
             if(i>=limit)
                 break;
-            result.push_back(s2.looped_get(i_2++));
+            result.push_back(s2.looping_get(i_2++));
         }
     }
-    
     return result;
 }
 
