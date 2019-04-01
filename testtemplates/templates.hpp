@@ -48,7 +48,6 @@ public:
     ~Sequence();
     
     void print();
-    bool is_empty();
     int size(){return length;}
     
     void push_back(Key,Info);   //done
@@ -56,7 +55,7 @@ public:
     void insert_at_pos(Key,Info,int pos);   //done
     void insert_after_key(Key,Info,Key);    //done
     
-    void remove_pos(int);           //
+    void remove_pos(int);           //done
     void remove_back();             //
     void remove_front();            //
     void remove_by_key(Key);        //
@@ -67,6 +66,14 @@ public:
     Node& get(int pos) const;           //done
     Node& looping_get(int pos) const;   //done
     Node& operator[](int pos) const;    //done
+    
+    bool operator==(Sequence<Key,Info> const &);    //
+    bool is_empty();
+    
+    template<class K, class I>
+    friend Sequence<K,I> produce(const Sequence<K,I> &s1, int start1, int len1,
+                                      const Sequence<K,I> &s2, int start2, int len2,
+                                      int limit);
 };
 
 
@@ -128,7 +135,7 @@ void Sequence<Key, Info>::push_back(Key key, Info val){
     length++;
 }
 
-// Adds element to the end of sequence by Node
+// Adds element to the end of sequence by Node, private
 template <class Key, class Info>
 void Sequence<Key, Info>::push_back(Node x){
     this->push_back(x.key, x.val);
@@ -141,7 +148,7 @@ void Sequence<Key,Info>::push_front(Key key, Info val){
     length++;
 }
 
-// Adds element to the front of sequence by Node
+// Adds element to the front of sequence by Node, private
 template<class Key, class Info>
 void Sequence<Key,Info>::push_front(Node x){
     this->push_front(x.key, x.val);
@@ -150,6 +157,7 @@ void Sequence<Key,Info>::push_front(Node x){
 // Inserts element at given position
 template <class Key, class Info>
 void Sequence<Key, Info>::insert_at_pos(Key k, Info val, int pos){
+    // Throw excpetion if position out of range
     if(pos > length)
         throw std::out_of_range("Sequence out of range");
     Node* tmp = head;
@@ -162,9 +170,10 @@ void Sequence<Key, Info>::insert_at_pos(Key k, Info val, int pos){
         }
         tmp->next = new Node(k,val,tmp->next);
     }
+    length++;
 }
 
-// Inserts by node
+// Inserts by node, private
 template <class Key, class Info>
 void Sequence<Key, Info>::insert_at_pos(Node n, int pos){
     this->insert_at_pos(n.key, n.val, pos);
@@ -184,16 +193,43 @@ void Sequence<Key, Info>::insert_after_key(Key k, Info val, Key x){
         }
         tmp = tmp->next;
     }
+    // Throw exception if there is no given key
     if(!found){
         throw std::invalid_argument("Sequence doesn't contain elements with given key");
     }
+    length++;
 }
 
-
+// Inserts using node, private
 template <class Key, class Info>
 void Sequence<Key, Info>::insert_after_key(Node n, Key x){
     this->insert_after_key(n.key, n.val, x);
 }
+
+// Removes a node from given position
+template <class Key, class Info>
+void Sequence<Key, Info>::remove_pos(int x){
+    if(x>length)
+        throw std::out_of_range("Sequence out of range");
+    Node* tmp = head;
+    Node* prev = head;
+    if(x==0){
+        tmp = head->next;
+        delete head;
+        head = tmp;
+    }
+    else{
+        for(int i=0; i < x; i++){
+            prev = tmp;
+            tmp = tmp->next;
+        }
+        prev->next = tmp->next;
+        delete tmp;
+    }
+    length--;
+}
+
+
 
 
 // Returns element from given position
@@ -223,6 +259,7 @@ typename Sequence<Key,Info>::Node& Sequence<Key,Info>::operator[](int pos) const
 // Creates a new sequence made from 2 other sequences
 // For each sequence it takes the start and length of the snip as an argument
 // It takes as many from the sequences as it can until it reaches the specified limit
+
 template<class Key, class Info>
 Sequence<Key,Info> produce(const Sequence<Key,Info> &s1, int start1, int len1,
                            const Sequence<Key,Info> &s2, int start2, int len2,

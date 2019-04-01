@@ -4,14 +4,18 @@
 using std::string;
 
 int main() {
-    Sequence<string, int> x;
-    x.push_back("a",1);
-    x.push_back("c",3);
-    x.push_back("e",5);
+    Sequence<int, int> x;
+    x.push_back(1,1);
+    x.push_back(3,3);
+    x.push_back(5,5);
     
     //x.insert_at_pos(2,2,1);
-    x.insert_after_key("b",2,"a");
+    x.insert_after_key(2,2,1);
     x.print();
+    x.remove_pos(3);
+    x.print();
+//    Sequence<string, int> f = produce<string,int>(x, 0, 3, x, 0, 3, 12);
+//    f.print();
 }
     
     
