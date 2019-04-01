@@ -56,8 +56,8 @@ public:
     void insert_after_key(Key,Info,Key);    //done
     
     void remove_pos(int);           //done
-    void remove_back();             //
-    void remove_front();            //
+    void remove_back();             //done
+    void remove_front();            //done
     void remove_by_key(Key);        //
     void remove_by_val(Info);       //
     void empty();                   //
@@ -68,7 +68,7 @@ public:
     Node& operator[](int pos) const;    //done
     
     bool operator==(Sequence<Key,Info> const &);    //
-    bool is_empty();
+    bool is_empty();    //done
     
     template<class K, class I>
     friend Sequence<K,I> produce(const Sequence<K,I> &s1, int start1, int len1,
@@ -101,6 +101,7 @@ Sequence<Key,Info>::~Sequence(){
     }
 }
 
+
 // Print function, prints a list of nodes in format "Key : Value", mostly for debugging
 template <class Key, class Info>
 void Sequence<Key,Info>::print() {
@@ -111,6 +112,7 @@ void Sequence<Key,Info>::print() {
     }
 }
 
+
 // Returns true if empty and false if not
 template <class Key, class Info>
 bool Sequence<Key,Info>::is_empty(){
@@ -118,6 +120,7 @@ bool Sequence<Key,Info>::is_empty(){
         return 0;
     return 1;
 }
+
 
 // Adds element to the end of sequence
 template <class Key, class Info>
@@ -135,11 +138,13 @@ void Sequence<Key, Info>::push_back(Key key, Info val){
     length++;
 }
 
+
 // Adds element to the end of sequence by Node, private
 template <class Key, class Info>
 void Sequence<Key, Info>::push_back(Node x){
     this->push_back(x.key, x.val);
 }
+
 
 // Adds element to the front of sequence
 template<class Key, class Info>
@@ -148,11 +153,13 @@ void Sequence<Key,Info>::push_front(Key key, Info val){
     length++;
 }
 
+
 // Adds element to the front of sequence by Node, private
 template<class Key, class Info>
 void Sequence<Key,Info>::push_front(Node x){
     this->push_front(x.key, x.val);
 }
+
 
 // Inserts element at given position
 template <class Key, class Info>
@@ -172,6 +179,7 @@ void Sequence<Key, Info>::insert_at_pos(Key k, Info val, int pos){
     }
     length++;
 }
+
 
 // Inserts by node, private
 template <class Key, class Info>
@@ -200,11 +208,13 @@ void Sequence<Key, Info>::insert_after_key(Key k, Info val, Key x){
     length++;
 }
 
+
 // Inserts using node, private
 template <class Key, class Info>
 void Sequence<Key, Info>::insert_after_key(Node n, Key x){
     this->insert_after_key(n.key, n.val, x);
 }
+
 
 // Removes a node from given position
 template <class Key, class Info>
@@ -229,17 +239,20 @@ void Sequence<Key, Info>::remove_pos(int x){
     length--;
 }
 
+
 // Remove node from the back
 template <class Key, class Info>
 void Sequence<Key, Info>::remove_back(){
     this->remove_pos(length-1);
 }
 
+
 // Remove node from the front
 template <class Key, class Info>
 void Sequence<Key, Info>::remove_front(){
     this->remove_pos(0);
 }
+
 
 // Returns element from given position
 template<class Key, class Info>
@@ -253,6 +266,7 @@ typename Sequence<Key,Info>::Node& Sequence<Key,Info>::get(int pos) const{
     return *tmp;
 }
 
+
 // Same as Get but loops the position
 template<class Key, class Info>
 typename Sequence<Key,Info>::Node& Sequence<Key,Info>::looping_get(int pos) const{
@@ -265,10 +279,12 @@ typename Sequence<Key,Info>::Node& Sequence<Key,Info>::operator[](int pos) const
     return this->get(pos);
 }
 
+
+
+
 // Creates a new sequence made from 2 other sequences
 // For each sequence it takes the start and length of the snip as an argument
 // It takes as many from the sequences as it can until it reaches the specified limit
-
 template<class Key, class Info>
 Sequence<Key,Info> produce(const Sequence<Key,Info> &s1, int start1, int len1,
                            const Sequence<Key,Info> &s2, int start2, int len2,
