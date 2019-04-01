@@ -229,8 +229,17 @@ void Sequence<Key, Info>::remove_pos(int x){
     length--;
 }
 
+// Remove node from the back
+template <class Key, class Info>
+void Sequence<Key, Info>::remove_back(){
+    this->remove_pos(length-1);
+}
 
-
+// Remove node from the front
+template <class Key, class Info>
+void Sequence<Key, Info>::remove_front(){
+    this->remove_pos(0);
+}
 
 // Returns element from given position
 template<class Key, class Info>
