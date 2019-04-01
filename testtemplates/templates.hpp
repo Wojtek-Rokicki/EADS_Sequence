@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdexcept>
+#include <exception>
 
 template<class Key, class Info>
 class Sequence {
@@ -36,6 +37,11 @@ private:
     
     Node* head;
     int length;
+    
+    void push_back(Node);               //done
+    void push_front(Node x);            //done
+    void insert_at_pos(Node,int pos);   //done
+    void insert_after_key(Node,Key);    //done
 public:
     Sequence():head(nullptr),length(0){}
     Sequence(Sequence const &);
@@ -46,17 +52,13 @@ public:
     int size(){return length;}
     
     void push_back(Key,Info);   //done
-    void push_back(Node);       //done
     void push_front(Key,Info);  //done
-    void push_front(Node x);    //done
     void insert_at_pos(Key,Info,int pos);   //done
-    void insert_at_pos(Node,int pos);       //done
-    void insert_after_key(Key,Info,Key);    //
-    void insert_after_key(Node,Key);        //
+    void insert_after_key(Key,Info,Key);    //done
     
+    void remove_pos(int);           //
     void remove_back();             //
     void remove_front();            //
-    void remove_pos(int);           //
     void remove_by_key(Key);        //
     void remove_by_val(Info);       //
     void empty();                   //
@@ -145,7 +147,7 @@ void Sequence<Key,Info>::push_front(Node x){
     this->push_front(x.key, x.val);
 }
 
-
+// Inserts element at given position
 template <class Key, class Info>
 void Sequence<Key, Info>::insert_at_pos(Key k, Info val, int pos){
     if(pos > length)
@@ -162,11 +164,37 @@ void Sequence<Key, Info>::insert_at_pos(Key k, Info val, int pos){
     }
 }
 
-
+// Inserts by node
 template <class Key, class Info>
 void Sequence<Key, Info>::insert_at_pos(Node n, int pos){
     this->insert_at_pos(n.key, n.val, pos);
 }
+
+
+// Inserts a node after first node with a given key
+template <class Key, class Info>
+void Sequence<Key, Info>::insert_after_key(Key k, Info val, Key x){
+    Node* tmp = head;
+    bool found = 0;
+    while(tmp){
+        if(tmp->key == x){
+            tmp->next = new Node(k,val,tmp->next);
+            found = 1;
+            break;
+        }
+        tmp = tmp->next;
+    }
+    if(!found){
+        throw std::invalid_argument("Sequence doesn't contain elements with given key");
+    }
+}
+
+
+template <class Key, class Info>
+void Sequence<Key, Info>::insert_after_key(Node n, Key x){
+    this->insert_after_key(n.key, n.val, x);
+}
+
 
 // Returns element from given position
 template<class Key, class Info>
