@@ -118,7 +118,6 @@ Sequence<Key,Info>& Sequence<Key,Info>::operator=(const Sequence &x){
         this->push_back(*tmp);
         tmp = tmp->next;
     }
-    
     return *this;
 }
 
@@ -131,7 +130,6 @@ void Sequence<Key,Info>::print_list() {
         std::cout << tmp->key << " : " << tmp->val << std::endl;
         tmp = tmp->next;
     }
-    std::cout << std::endl;
 }
 
 
@@ -304,7 +302,7 @@ void Sequence<Key, Info>::extend(const Sequence<Key,Info> &x){
 // Removes a node from given position
 template <class Key, class Info>
 void Sequence<Key, Info>::remove_pos(int x){
-    if(x>length)
+    if(x>=length || x < 0)
         throw std::out_of_range("Sequence out of range");
     Node* tmp = head;
     Node* prev = head;
@@ -366,6 +364,7 @@ void Sequence<Key, Info>::remove_by_key(Key k){
     }
     if(!found)
         throw std::invalid_argument("Sequence doesn't contain element with given key");
+    length--;
 }
 
 
