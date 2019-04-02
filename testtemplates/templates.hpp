@@ -389,13 +389,6 @@ typename Sequence<Key,Info>::Node& Sequence<Key,Info>::get(int pos) const{
 }
 
 
-// Same as Get but loops the position
-template<class Key, class Info>
-typename Sequence<Key,Info>::Node& Sequence<Key,Info>::looping_get(int pos) const{
-    return this->get(pos%length);
-}
-
-
 // Brackets operator, calls get
 template<class Key, class Info>
 typename Sequence<Key,Info>::Node& Sequence<Key,Info>::operator[](int pos) const{
@@ -407,13 +400,18 @@ typename Sequence<Key,Info>::Node& Sequence<Key,Info>::operator[](int pos) const
 // For each sequence it takes the start and length of the snip as an argument
 // It takes as many from the sequences as it can until it reaches the specified limit
 template<class Key, class Info>
-Sequence<Key,Info> produce(const Sequence<Key,Info> &s1, int start1, int len1,
-                           const Sequence<Key,Info> &s2, int start2, int len2,
+Sequence<Key,Info> produce(const Sequence<Key,Info> &s1, int start1,
+                           int len1,
+                           const Sequence<Key,Info> &s2, int start2,
+                           int len2,
                            int limit){
-    if(limit <= 0)
+    if(limit <= 0){
         throw std::invalid_argument("Sequence limit must be more than 0");
-    if(s1.is_empty() || s2.is_empty())
+    }
+    if(s1.is_empty() || s2.is_empty()){
         throw std::invalid_argument("Sequence cannot be empty");
+    }
+    
     Sequence<Key,Info> result;
     int i=0,j;
     int i_1 = start1, i_2 = start2;
@@ -424,12 +422,14 @@ Sequence<Key,Info> produce(const Sequence<Key,Info> &s1, int start1, int len1,
         for(j=0; j < len1; j++, i++){
             if(i>=limit)
                 break;
-            result.push_back(s1.looping_get(i_1++));
+            result.push_back(s1.get(i_1 % s1.length));
+            i_1++;
         }
         for(j=0; j < len2; j++, i++){
             if(i>=limit)
                 break;
-            result.push_back(s2.looping_get(i_2++));
+            result.push_back(s2.get(i_2 % s2.length));
+            i_2++;
         }
     }
     return result;
