@@ -27,24 +27,20 @@ private:
             val = x.val;
             next = nullptr;
         }
-        
-        // Print function, requires the Key and Value to have ostream operator defined
-        void print(){
-            std::cout << key << " : " << val << std::endl;
-        }
     };
     
     Node* head;
+    Node* tail;
     int length;
     
-    // Those functions
+    // Overloaded with Node as argument
     void push_back(Node);
-    void push_front(Node x);
+    void push_front(Node);
     void insert_at_pos(Node,int pos);
     void insert_after_key(Node,Key);
 public:
     // Constructors, destructor
-    Sequence():head(nullptr),length(0){}
+    Sequence():head(nullptr),tail(nullptr),length(0){}
     Sequence(Sequence const &);
     ~Sequence();
     
@@ -63,9 +59,8 @@ public:
     void empty();
 
     // Functions for getting elements from the list
-    Node& get(int pos) const;           //done
-    Node& looping_get(int pos) const;   //done
-    Node& operator[](int pos) const;    //done
+    Node& get(int pos) const;
+    Node& operator[](int pos) const;
     
     // Operators
     Sequence& operator=(Sequence const &);
@@ -73,6 +68,7 @@ public:
     bool operator!=(Sequence<Key,Info> const &);
     
     // Quality of life functions
+    int find(Key);
     void print_list();
     bool is_empty() const;
     int size(){return length;}
@@ -89,6 +85,7 @@ public:
 template <class Key, class Info>
 Sequence<Key,Info>::Sequence(Sequence const &x){
     head = nullptr;
+    tail = nullptr;
     length = 0;
     Node* tmp = x.head;
     while(tmp){
@@ -131,19 +128,33 @@ template <class Key, class Info>
 void Sequence<Key,Info>::print_list() {
     Node* tmp = head;
     while(tmp){
-        tmp->print();
+        std::cout << tmp->key << " : " << tmp->val << std::endl;
         tmp = tmp->next;
     }
     std::cout << std::endl;
 }
 
 
-// Returns true if empty and false if not
+// Returns 1 if empty and 0 if not
 template <class Key, class Info>
 bool Sequence<Key,Info>::is_empty() const{
     if(head)
         return 0;
     return 1;
+}
+
+// Returns position of element with given key, -1 if it doesn't exist
+template <class Key, class Info>
+int Sequence<Key,Info>::find(Key x){
+    Node* tmp = head;
+    int i = 0;
+    while(tmp){
+        if(tmp->key == x)
+            return i;
+        tmp = tmp->next;
+        i++;
+    }
+    return -1;
 }
 
 // Operator ==
@@ -182,13 +193,11 @@ template <class Key, class Info>
 void Sequence<Key, Info>::push_back(Key key, Info val){
     if(!head){
         head = new Node(key,val);
+        tail = head;
     }
     else{
-        Node* tmp = head;
-        while(tmp->next){
-            tmp = tmp->next;
-        }
-        tmp->next = new Node(key,val);
+        tail->next = new Node(key,val);
+        tail = tail->next;
     }
     length++;
 }
@@ -205,6 +214,8 @@ void Sequence<Key, Info>::push_back(Node x){
 template<class Key, class Info>
 void Sequence<Key,Info>::add_front(Key key, Info val){
     head = new Node(key,val,head);
+    if(!tail)
+        tail = head;
     length++;
 }
 
@@ -222,9 +233,14 @@ void Sequence<Key, Info>::insert_at_pos(Key k, Info val, int pos){
     // Throw excpetion if position out of range
     if(pos > length)
         throw std::out_of_range("Sequence out of range");
+    
     Node* tmp = head;
     if(pos==0){
         head = new Node(k,val,tmp);
+    }
+    else if(pos == length){
+        tail->next = new Node(k,val);
+        tail = tail->next;
     }
     else{
         for(int i=0;i < pos-1;i++){
@@ -256,6 +272,10 @@ void Sequence<Key, Info>::insert_after_key(Key k, Info val, Key x){
         }
         tmp = tmp->next;
     }
+    // Set tail if needed
+    if(tmp == tail)
+        tail = tmp->next;
+    
     // Throw exception if there is no given key
     if(!found){
         throw std::invalid_argument("Sequence doesn't contain elements with given key");
@@ -270,6 +290,16 @@ void Sequence<Key, Info>::insert_after_key(Node n, Key x){
     this->insert_after_key(n.key, n.val, x);
 }
 
+
+// Extends sequence with elements from given sequence
+template <class Key, class Info>
+void Sequence<Key, Info>::extend(const Sequence<Key,Info> &x){
+    Node* tmp = x.head;
+    while(tmp){
+        this->push_back(*tmp);
+        tmp = tmp->next;
+    }
+}
 
 // Removes a node from given position
 template <class Key, class Info>
@@ -289,6 +319,8 @@ void Sequence<Key, Info>::remove_pos(int x){
             tmp = tmp->next;
         }
         prev->next = tmp->next;
+        if(tail == tmp)
+            tail = prev;
         delete tmp;
     }
     length--;

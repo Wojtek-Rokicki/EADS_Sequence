@@ -4,12 +4,13 @@
 using std::string;
 
 int main() {
-    Sequence<int, int> empty_seq;
+    // Test for functions that add
     Sequence<int, int> x;
     x.push_back(1,1);
     x.push_back(3,3);
     x.push_back(5,5);
     x.print_list();
+    std::cout << x.size() << std::endl;
     
     Sequence<int, int> y;
     y.add_front(6,6);
@@ -22,5 +23,4 @@ int main() {
 
     f = produce(x,0,1,y,0,1,6) = produce(x,0,3,y,0,3,6);
     f.print_list();
-    
 }
