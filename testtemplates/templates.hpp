@@ -52,7 +52,7 @@ public:
     int size(){return length;}
     
     void push_back(Key,Info);   //done
-    void push_front(Key,Info);  //done
+    void add_front(Key,Info);  //done
     void insert_at_pos(Key,Info,int pos);   //done
     void insert_after_key(Key,Info,Key);    //done
     
@@ -196,7 +196,7 @@ void Sequence<Key, Info>::push_back(Node x){
 
 // Adds element to the front of sequence
 template<class Key, class Info>
-void Sequence<Key,Info>::push_front(Key key, Info val){
+void Sequence<Key,Info>::add_front(Key key, Info val){
     head = new Node(key,val,head);
     length++;
 }

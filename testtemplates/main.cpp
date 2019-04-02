@@ -12,8 +12,8 @@ int main() {
     x.print();
     
     Sequence<int, int> y;
-    y.push_front(6,6);
-    y.push_front(2,2);
+    y.add_front(6,6);
+    y.add_front(2,2);
     y.insert_at_pos(4, 4, 1);
     y.print();
     
@@ -22,4 +22,5 @@ int main() {
 
     f = produce(x,0,1,y,0,1,6) = produce(x,0,3,y,0,3,6);
     f.print();
+    
 }
