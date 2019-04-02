@@ -13,7 +13,7 @@ private:
         Info val;
         Node* next = nullptr;
         
-        // Constructors
+        // Constructors for node
         Node():next(nullptr){}
         Node(Key& k, Info& v, Node* next_ptr = nullptr){
             key = k;
@@ -28,7 +28,7 @@ private:
             next = nullptr;
         }
         
-        // Print function, requires the Key and Value to have << operator defined
+        // Print function, requires the Key and Value to have ostream operator defined
         void print(){
             std::cout << key << " : " << val << std::endl;
         }
@@ -37,40 +37,47 @@ private:
     Node* head;
     int length;
     
-    void push_back(Node);               //done
-    void push_front(Node x);            //done
-    void insert_at_pos(Node,int pos);   //done
-    void insert_after_key(Node,Key);    //done
+    // Those functions
+    void push_back(Node);
+    void push_front(Node x);
+    void insert_at_pos(Node,int pos);
+    void insert_after_key(Node,Key);
 public:
+    // Constructors, destructor
     Sequence():head(nullptr),length(0){}
     Sequence(Sequence const &);
     ~Sequence();
     
-    Sequence& operator=(Sequence const &);
+    // Functions that add elments to the sequence
+    void push_back(Key,Info);
+    void add_front(Key,Info);
+    void insert_at_pos(Key,Info,int pos);
+    void insert_after_key(Key,Info,Key);
+    void extend(Sequence<Key,Info> const &);
     
-    void print();               //done
-    int size(){return length;}
-    
-    void push_back(Key,Info);   //done
-    void add_front(Key,Info);  //done
-    void insert_at_pos(Key,Info,int pos);   //done
-    void insert_after_key(Key,Info,Key);    //done
-    
-    void remove_pos(int);           //done
-    void remove_back();             //done
-    void remove_front();            //done
-    void remove_by_key(Key);        //done
-    
-    void empty();                   //done
-    
+    // Functions removing elements from the sequence
+    void remove_pos(int);
+    void remove_back();
+    void remove_front();
+    void remove_by_key(Key);
+    void empty();
+
+    // Functions for getting elements from the list
     Node& get(int pos) const;           //done
     Node& looping_get(int pos) const;   //done
     Node& operator[](int pos) const;    //done
     
-    bool operator==(Sequence<Key,Info> const &);    //done
-    bool operator!=(Sequence<Key,Info> const &);    //done
-    bool is_empty() const;    //done
+    // Operators
+    Sequence& operator=(Sequence const &);
+    bool operator==(Sequence<Key,Info> const &);
+    bool operator!=(Sequence<Key,Info> const &);
     
+    // Quality of life functions
+    void print_list();
+    bool is_empty() const;
+    int size(){return length;}
+    
+    // Defining produce function as a friend
     template<class K, class I>
     friend Sequence<K,I> produce(const Sequence<K,I> &s1, int start1, int len1,
                                       const Sequence<K,I> &s2, int start2, int len2,
@@ -121,7 +128,7 @@ Sequence<Key,Info>& Sequence<Key,Info>::operator=(const Sequence &x){
 
 // Print function, prints a list of nodes in format "Key : Value", mostly for debugging
 template <class Key, class Info>
-void Sequence<Key,Info>::print() {
+void Sequence<Key,Info>::print_list() {
     Node* tmp = head;
     while(tmp){
         tmp->print();
