@@ -2,7 +2,6 @@
 #define templates_hpp
 
 #include <stdio.h>
-#include <stdexcept>
 #include <exception>
 
 template<class Key, class Info>
@@ -47,7 +46,9 @@ public:
     Sequence(Sequence const &);
     ~Sequence();
     
-    void print();
+    Sequence& operator=(Sequence const &);
+    
+    void print();               //done
     int size(){return length;}
     
     void push_back(Key,Info);   //done
@@ -58,17 +59,17 @@ public:
     void remove_pos(int);           //done
     void remove_back();             //done
     void remove_front();            //done
-    void remove_by_key(Key);        //
-    void remove_by_val(Info);       //
-    void empty();                   //
-    void erase();                   //
+    void remove_by_key(Key);        //done
+    
+    void empty();                   //done
     
     Node& get(int pos) const;           //done
     Node& looping_get(int pos) const;   //done
     Node& operator[](int pos) const;    //done
     
-    bool operator==(Sequence<Key,Info> const &);    //
-    bool is_empty();    //done
+    bool operator==(Sequence<Key,Info> const &);    //done
+    bool operator!=(Sequence<Key,Info> const &);    //done
+    bool is_empty() const;    //done
     
     template<class K, class I>
     friend Sequence<K,I> produce(const Sequence<K,I> &s1, int start1, int len1,
@@ -101,6 +102,22 @@ Sequence<Key,Info>::~Sequence(){
     }
 }
 
+// Assignment operator
+template <class Key, class Info>
+Sequence<Key,Info>& Sequence<Key,Info>::operator=(const Sequence &x){
+    if(this == &x)
+        return *this;
+    this->empty();
+    Node* tmp = x.head;
+    
+    while(tmp){
+        this->push_back(*tmp);
+        tmp = tmp->next;
+    }
+    
+    return *this;
+}
+
 
 // Print function, prints a list of nodes in format "Key : Value", mostly for debugging
 template <class Key, class Info>
@@ -110,15 +127,46 @@ void Sequence<Key,Info>::print() {
         tmp->print();
         tmp = tmp->next;
     }
+    std::cout << std::endl;
 }
 
 
 // Returns true if empty and false if not
 template <class Key, class Info>
-bool Sequence<Key,Info>::is_empty(){
+bool Sequence<Key,Info>::is_empty() const{
     if(head)
         return 0;
     return 1;
+}
+
+// Operator ==
+template <class Key, class Info>
+bool Sequence<Key,Info>::operator==(const Sequence<Key,Info> &x){
+    Node* tmp1 = head;
+    Node* tmp2 = x.head;
+    if(length != x.length){
+        return 0;
+    }
+    while(tmp1){
+        if(tmp1->key != tmp2->key || tmp1->val != tmp2->val){
+            return 0;
+        }
+        if(tmp1->next != nullptr && tmp2->next == nullptr){
+            return 0;
+        }
+        if(tmp1->next == nullptr && tmp2->next != nullptr){
+            return 0;
+        }
+        tmp1 = tmp1->next;
+        tmp2 = tmp2->next;
+    }
+    return 1;
+}
+
+// Operator !=
+template <class Key, class Info>
+bool Sequence<Key,Info>::operator!=(const Sequence<Key,Info> &x){
+    return !(*this == x);
 }
 
 
@@ -254,6 +302,41 @@ void Sequence<Key, Info>::remove_front(){
 }
 
 
+// Remove first node with given key
+template <class Key, class Info>
+void Sequence<Key, Info>::remove_by_key(Key k){
+    Node* tmp = head;
+    Node* prev = head;
+    bool found = 0;
+    if(head->key == k){
+        head = head->next;
+        found = 1;
+    }
+    else{
+        tmp = tmp->next;
+        while(tmp){
+            if(tmp->key == k){
+                prev->next = tmp->next;
+                delete tmp;
+                found = 1;
+                break;
+            }
+            prev = tmp;
+            tmp = tmp->next;
+        }
+    }
+    if(!found)
+        throw std::invalid_argument("Sequence doesn't contain element with given key");
+}
+
+
+// Removes all elements of the sequence
+template <class Key, class Info>
+void Sequence<Key, Info>::empty(){
+    while(head)
+        this->remove_pos(0);
+}
+
 // Returns element from given position
 template<class Key, class Info>
 typename Sequence<Key,Info>::Node& Sequence<Key,Info>::get(int pos) const{
@@ -273,13 +356,12 @@ typename Sequence<Key,Info>::Node& Sequence<Key,Info>::looping_get(int pos) cons
     return this->get(pos%length);
 }
 
+
 // Brackets operator, calls get
 template<class Key, class Info>
 typename Sequence<Key,Info>::Node& Sequence<Key,Info>::operator[](int pos) const{
     return this->get(pos);
 }
-
-
 
 
 // Creates a new sequence made from 2 other sequences
@@ -289,6 +371,10 @@ template<class Key, class Info>
 Sequence<Key,Info> produce(const Sequence<Key,Info> &s1, int start1, int len1,
                            const Sequence<Key,Info> &s2, int start2, int len2,
                            int limit){
+    if(limit <= 0)
+        throw std::invalid_argument("Sequence limit must be more than 0");
+    if(s1.is_empty() || s2.is_empty())
+        throw std::invalid_argument("Sequence cannot be empty");
     Sequence<Key,Info> result;
     int i=0,j;
     int i_1 = start1, i_2 = start2;
