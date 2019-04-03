@@ -111,6 +111,14 @@ void tests() {
         std::cout << "Empty" << std::endl;
     
     
+    std::cout << "Get by key" << std::endl;
+    try{
+        x.get_by_key(4);
+    }catch(std::invalid_argument ex){
+        std::cout << ex.what() << std::endl;
+    }
+    
+    
     // Check for other data types
     std::cout << "Check for other data types" << std::endl;
     Sequence<string,float> s_seq;
@@ -123,8 +131,8 @@ void tests() {
 
 int main(){
     std::cout << "TESTS" << std::endl;
-    //tests();
-    std::cout << "\n\n\n" << std::endl;
+    tests();
+    std::cout << "\n" << std::endl;
     
     std::cout << "Produce function" << std::endl;
     Sequence<int,int> a;
@@ -142,4 +150,6 @@ int main(){
     
     // Expected 5,7,0,2,4,6,1,3,0,2,4,6,
     produce(a, 2, 2, b, 0, 4, 12).print_list();
+    
+    
 }

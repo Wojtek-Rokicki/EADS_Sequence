@@ -61,6 +61,7 @@ public:
     // Functions for getting elements from the list
     Node& get(int pos) const;
     Node& operator[](int pos) const;
+    Node& get_by_key(Key) const;
     
     // Operators
     Sequence& operator=(Sequence const &);
@@ -385,6 +386,18 @@ typename Sequence<Key,Info>::Node& Sequence<Key,Info>::get(int pos) const{
         tmp = tmp->next;
     }
     return *tmp;
+}
+
+template<class Key, class Info>
+typename Sequence<Key,Info>::Node& Sequence<Key,Info>::get_by_key(Key k) const{
+    Node* tmp = head;
+
+    while(tmp){
+        if(tmp->key == k){
+            return *tmp;
+        }
+    }
+    throw std::invalid_argument("Seqeunce doesn't contain element with given Key");
 }
 
 
