@@ -126,6 +126,7 @@ int main(){
     //tests();
     std::cout << "\n\n\n" << std::endl;
     
+    std::cout << "Produce function" << std::endl;
     Sequence<int,int> a;
     Sequence<int,int> b;
     for(int i=0; i<4;i++){
