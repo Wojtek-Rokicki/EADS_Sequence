@@ -3,7 +3,7 @@
 
 using std::string;
 
-int main() {
+void tests() {
     // Test addition functions
     std::cout << "\nPush back" << std::endl;
     Sequence<int, int> x;
@@ -119,5 +119,26 @@ int main() {
     s_seq.insert_at_pos("foobar", 1.5, 1);
     s_seq.print_list();
     std::cout << "Length: " << x.size() << std::endl;
+}
+
+int main(){
+    std::cout << "TESTS" << std::endl;
+    //tests();
+    std::cout << "\n\n\n" << std::endl;
     
+    Sequence<int,int> a;
+    Sequence<int,int> b;
+    for(int i=0; i<4;i++){
+        a.push_back(i*2+1, (i*2+1)*10);
+        b.push_back(i*2, i*20);
+    }
+    //1,3,5,7
+    //0,2,4,6
+    
+    // Excpected 0,1,2,3,4,5,6,7
+    produce(b, 0, 1, a, 0, 1, 8).print_list();
+    std::cout << std::endl;
+    
+    // Expected 5,7,0,2,4,6,1,3,0,2,4,6,
+    produce(a, 2, 2, b, 0, 4, 12).print_list();
 }
